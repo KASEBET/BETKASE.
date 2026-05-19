@@ -1,44 +1,70 @@
-export type Sport = 'futbol' | 'tenis' | 'nba' | 'all';
-export type BetType = 'gratis' | 'premium';
-export type BetResult = 'win' | 'loss' | 'void' | null;
+import { format } from 'date-fns';
 
-export interface Team {
-  name: string;
-  logo: string;
-  sport?: string;
-  id?: string;
-}
+const COL_TZ = 'America/Bogota';
 
-export interface Bet {
+export interface ESPNMatch {
   id: string;
-  match: string;
-  prediction: string;
-  odds: string;
-  image: string;
-  awayImage: string;
-  type: BetType;
   sport: string;
-  status: 'active' | 'completed';
-  result: BetResult;
-  createdAt: number;
-  userId: string;
-  userEmail: string;
-  liveMatchId?: string;
-  ligaSlug?: string;
+  sportIcon: string;
+  sportName: string;
+  liga: string;
+  ligaSlug: string;
+  hora: string;
+  dia: string;
+  fecha: string;
+  timestamp: number;
+  local: {
+    name: string;
+    logo: string;
+    score: string;
+  };
+  away: {
+    name: string;
+    logo: string;
+    score: string;
+  };
+  periodo: number;
+  tiempo: string;
+  enVivo: boolean;
+  finalizado: boolean;
 }
 
-export interface MatchStats {
-  goalsLocal: number;
-  goalsAway: number;
-  yellowLocal: number;
-  yellowAway: number;
-  redLocal: number;
-  redAway: number;
-  cornersLocal: number;
-  cornersAway: number;
-  shotsLocal: number;
-  shotsAway: number;
-  shotsOnTargetLocal: number;
-  shotsOnTargetAway: number;
-  updatedAt: number;
+export async function fetchESPN(url: string) {
+  try {
+    const secureUrl = url.replace(/^http:\/\//i, 'https://');
+    const res = await fetch(secureUrl);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) {
+    return null;
+  }
+}
+
+export function getESPNUrl(sport: string, league: string, date: string) {
+  const base = 'https://site.api.espn.com/apis/site/v2/sports';
+  if (sport === 'futbol') return `${base}/soccer/${league}/scoreboard?dates=${date}`;
+  if (sport === 'nba') return `${base}/basketball/nba/scoreboard?dates=${date}`;
+  if (sport === 'tenis') return `${base}/tennis/${league}/scoreboard?dates=${date}`;
+  return null;
+}
+
+export function getESPNDateParam(offsetDays = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  return format(d, 'yyyyMMdd');
+}
+
+export function formatMatchDateTime(dateStr: string) {
+  if (!dateStr) return { hora: '', dia: '', fecha: '', timestamp: 0 };
+  try {
+    const d = new Date(dateStr);
+    return {
+      hora: format(d, 'HH:mm'),
+      dia: format(d, 'EEEE'),
+      fecha: format(d, 'dd MMM'),
+      timestamp: d.getTime()
+    };
+  } catch (e) {
+    return { hora: '', dia: '', fecha: '', timestamp: 0 };
+  }
 }
