@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../lib/firebase';
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, orderBy } from 'firebase/firestore';
 import { Bet, Team, Sport } from '../types';
-import { Plus, Trash2, Edit2, Check, X, ShieldAlert, RefreshCw } from 'lucide-react';
+import { ShieldAlert, RotateCw } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { SOCCER_LEAGUES } from '../constants';
 import { fetchESPN } from '../services/espn';
@@ -101,7 +101,7 @@ export function AdminPanel() {
       <div className="bg-gradient-to-br from-blue-900/20 to-black p-8 rounded-[40px] border border-blue-500/20">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <RefreshCw className={cn("text-blue-400", syncing && "animate-spin")} size={32} />
+            <RotateCw className={cn("text-blue-400", syncing && "animate-spin")} size={32} />
             <div>
               <h3 className="text-xl font-black text-blue-400">Sincronización ESPN</h3>
               <p className="text-xs text-gray-500">Descarga los partidos de hoy a Firestore.</p>
