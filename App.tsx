@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { auth, db } from './lib/firebase';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
 import { collection, query, orderBy, onSnapshot, doc, getDoc } from 'firebase/firestore';
-import { Trophy, Target, TrendingUp, Calendar, LogOut, Crown, Search, RefreshCw, ChevronDown, CheckCircle2, AlertTriangle, Info, X, ShieldAlert, User as UserIcon, Lock } from 'lucide-react';
+import { Trophy, Target, TrendingUp, Calendar, LogOut, Crown, Search, ChevronDown, ShieldAlert, User as UserIcon, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Bet, Sport } from './types';
 import { cn } from './lib/utils';
