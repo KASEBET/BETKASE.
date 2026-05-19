@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { fetchESPN, getESPNDateParam, ESPNMatch, formatMatchDateTime } from '../services/espn';
 import { SOCCER_LEAGUES } from '../constants';
 import { cn } from '../lib/utils';
-import { RefreshCw, MapPin, Clock, Trophy } from 'lucide-react';
+import { RotateCw, Trophy } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export function LiveMatches() {
@@ -96,7 +96,7 @@ export function LiveMatches() {
             onClick={loadMatches}
             className="p-2.5 bg-[#111] border border-[#222] rounded-xl hover:text-[#00ff88] transition-colors"
           >
-            <RefreshCw size={20} className={loading ? "animate-spin" : ""} />
+            <RotateCw size={20} className={loading ? "animate-spin" : ""} />
           </button>
         </div>
       </div>
