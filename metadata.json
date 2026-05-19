@@ -1,6 +1,8 @@
-{
-  "name": "BETKASE",
-  "description": "Plataforma Premium de Apuestas Deportivas con pronósticos en vivo y análisis estadístico.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example

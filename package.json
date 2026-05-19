@@ -1,40 +1,53 @@
-{
-  "name": "react-example",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite --port=3000 --host=0.0.0.0",
-    "build": "vite build",
-    "preview": "vite preview",
-    "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@google/genai": "^1.29.0",
-    "@tailwindcss/vite": "^4.1.14",
-    "@vitejs/plugin-react": "^5.0.4",
-    "clsx": "^2.1.1",
-    "date-fns": "^4.2.1",
-    "dotenv": "^17.2.3",
-    "express": "^4.21.2",
-    "firebase": "^12.13.0",
-    "lucide-react": "^0.546.0",
-    "motion": "^12.23.24",
-    "react": "^19.0.1",
-    "react-dom": "^19.0.1",
-    "react-markdown": "^10.1.0",
-    "tailwind-merge": "^3.6.0",
-    "vite": "^6.2.3"
-  },
-  "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/node": "^22.14.0",
-    "autoprefixer": "^10.4.21",
-    "esbuild": "^0.25.0",
-    "tailwindcss": "^4.1.14",
-    "tsx": "^4.21.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.3"
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Catch-all deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global helpers
+    function isSignedIn() { return request.auth != null; }
+    function isVerified() { return isSignedIn() && request.auth.token.email_verified == true; }
+    function isAdmin() { return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)); }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+
+    // Users collection
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['savedCards']);
+    }
+
+    // Admin collection (to store admin roles)
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if false; // Only manageable via GCP console/CLI for safety
+    }
+
+    // Bets collection
+    match /bets/{betId} {
+      allow read: if true; // Everyone can see the list (premium content handled via UI blur)
+      allow create, update, delete: if isAdmin();
+    }
+
+    // MatchStats collection
+    match /matchStats/{betId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // BankData collection (PII isolation)
+    match /bankData/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow create, update: if isOwner(userId);
+    }
+
+    // Payments collection
+    match /payments/{paymentId} {
+      allow get: if (isSignedIn() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if isSignedIn();
+      allow update: if isAdmin();
+    }
   }
 }
