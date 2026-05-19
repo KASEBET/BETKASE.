@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { db } from '../lib/firebase';
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, orderBy } from 'firebase/firestore';
 import { Bet, Team, Sport } from '../types';
-import { Plus, Trash2, Edit2, Check, X, ShieldAlert } from 'lucide-react';
+import { Plus, Trash2, Edit2, Check, X, ShieldAlert, RefreshCw } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { SOCCER_LEAGUES } from '../constants';
+import { fetchESPN } from '../services/espn';
 
 export function AdminPanel() {
   const [localTeam, setLocalTeam] = useState<Team | null>(null);
