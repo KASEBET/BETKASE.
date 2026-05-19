@@ -1,0 +1,109 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and saved settings.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "createdAt": { "type": "number" },
+        "savedCards": {
+          "type": "array",
+          "items": { "type": "object" }
+        }
+      },
+      "required": ["email", "createdAt"]
+    },
+    "UserPremium": {
+      "title": "UserPremium",
+      "description": "Premium status and expiration.",
+      "type": "object",
+      "properties": {
+        "isPremium": { "type": "boolean" },
+        "planId": { "type": "string" },
+        "premiumUntil": { "type": "number" },
+        "activatedAt": { "type": "number" }
+      }
+    },
+    "Bet": {
+      "title": "Bet",
+      "description": "A sporting bet published by an admin.",
+      "type": "object",
+      "properties": {
+        "match": { "type": "string" },
+        "prediction": { "type": "string" },
+        "odds": { "type": "string" },
+        "image": { "type": "string" },
+        "awayImage": { "type": "string" },
+        "type": { "type": "string", "enum": ["gratis", "premium"] },
+        "sport": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "completed"] },
+        "result": { "type": "string", "enum": ["win", "loss", "void", null] },
+        "createdAt": { "type": "number" },
+        "userId": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "liveMatchId": { "type": "string" },
+        "ligaSlug": { "type": "string" }
+      },
+      "required": ["match", "prediction", "odds", "type", "sport", "status", "createdAt"]
+    },
+    "MatchStats": {
+      "title": "MatchStats",
+      "description": "Detailed statistics for a match.",
+      "type": "object",
+      "properties": {
+        "goalsLocal": { "type": "number" },
+        "goalsAway": { "type": "number" },
+        "yellowLocal": { "type": "number" },
+        "yellowAway": { "type": "number" },
+        "redLocal": { "type": "number" },
+        "redAway": { "type": "number" },
+        "cornersLocal": { "type": "number" },
+        "cornersAway": { "type": "number" },
+        "shotsLocal": { "type": "number" },
+        "shotsAway": { "type": "number" },
+        "shotsOnTargetLocal": { "type": "number" },
+        "shotsOnTargetAway": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      }
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "Record of a payment attempt.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "planId": { "type": "string" },
+        "planName": { "type": "string" },
+        "amount": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "pending_verification", "completed", "rejected"] },
+        "createdAt": { "type": "number" },
+        "paymentData": { "type": "object" }
+      },
+      "required": ["userId", "userEmail", "planId", "amount", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile documents."
+    },
+    "/usersPremium/{userId}": {
+      "schema": "UserPremium",
+      "description": "Premium status documents."
+    },
+    "/bets/{betId}": {
+      "schema": "Bet",
+      "description": "Bet documents."
+    },
+    "/matchStats/{betId}": {
+      "schema": "MatchStats",
+      "description": "Match statistics associated with a bet."
+    },
+    "/payments/{paymentId}": {
+      "schema": "Payment",
+      "description": "Payment records."
+    }
+  }
+}
